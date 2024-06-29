@@ -82,9 +82,13 @@ trim_galore \
 **From this point forward, we assume that:**
 
 PACBIO_HIFI.fastq.gz = PACBIO_HIFI.filt.fastq.gz
+
 WGS_FILE_R1.fastq.gz = WGS_FILE_R1.filt.fastq.gz 
+
 WGS_FILE_R2.fastq.gz = WGS_FILE_R2.filt.fastq.gz 
+
 HIC_FILE_R1.fastq.gz = HIC_FILE_R1.filt.fastq.gz
+
 HIC_FILE_R2.fastq.gz = HIC_FILE_R2.filt.fastq.gz
 
 ## Initial *de novo* assembly
