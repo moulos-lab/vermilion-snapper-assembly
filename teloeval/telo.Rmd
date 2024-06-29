@@ -1,0 +1,103 @@
+---
+title: Telomere sequence content
+date: "`r format(Sys.time(), '%d/%m/%Y')`"
+output:
+  rmdformats::robobook:
+    fig_width: 7
+    fig_height: 7
+    fig_caption: true
+    highlight: kate
+    lightbox: true
+    #thumbnails: true
+    #gallery: true
+    cards: true
+    use_bookdown: false
+    mathjax: null
+    self_contained: true
+---
+
+```{r load, echo=FALSE}
+library(knitr)
+library(pander)
+
+opts_chunk$set(
+    echo=FALSE,
+    cache=FALSE,
+    prompt=FALSE,
+    tidy=TRUE,
+    comment=NA,
+    message=FALSE,
+    warning=FALSE,
+    results="asis",
+    eval=TRUE,
+    fig.align="center"
+)
+```
+
+```{r defs}
+scientific_10 <- function(x) {
+    parse(text=gsub("e", " %*% 10^", scales::scientific_format()(x)))
+}
+```
+
+# Patterns {.tabset .tabset-pills}
+
+Click on a telomere sequence pattern below to see the respective figures for
+each chromosome.
+
+```{r results_eval, fig.width=8, fig.height=6}
+for (n in names(matchList)) {
+    pandoc.header(paste0("Pattern ",n),level=2)
+    #cat("<h1>Pattern ",n,"</h1>")
+    
+    for (chr in names(matchList[[n]])) {
+        #pandoc.header(chr,level=2)
+        cat("<h2>",chr,"</h2>")
+        
+        x <- data.frame(Position=matchList[[n]][[chr]])
+        
+        #pandoc.header("Histogram of pattern occurence frequency",level=3)
+        cat("<h3>Histogram of pattern occurence frequency</h3>")
+        cat("<div>")
+        g <- ggplot(x,aes(x=Position)) + 
+            geom_histogram(binwidth=500000,color="darkblue",fill="lightblue") +
+            xlab("\nPosition (bp)") +
+            ylab(paste(n," occurences\n")) +
+            ggtitle(chr) + 
+            scale_x_continuous(labels=scales::label_number(
+                scale_cut=cut_short_scale()),n.breaks=10) +
+            theme(
+                plot.title=element_text(hjust=0.5),
+                axis.title.x=element_text(size=14,face="bold"),
+                axis.title.y=element_text(size=14,face="bold"),
+                axis.text.x=element_text(size=10,face="bold"),
+                axis.text.y=element_text(size=12,face="bold")
+            )
+        print(g)
+        cat("</div>")
+        #cat("</br>")
+        
+        #pandoc.header("Density of pattern occurence frequency",level=3)
+        cat("<h3>Density of pattern occurence frequency</h3>")
+        cat("<div>")
+        g <- ggplot(x,aes(x=Position)) + 
+            geom_density(color="red4",fill="red3",alpha=0.2) +
+            xlab("\nPosition (bp)") +
+            ylab(paste(n," density\n")) +
+            ggtitle(chr) + 
+            scale_x_continuous(labels=scales::label_number(
+                scale_cut=cut_short_scale()),n.breaks=10) +
+            scale_y_continuous(label=scientific_10) +
+            theme(
+                plot.title=element_text(hjust=0.5),
+                axis.title.x=element_text(size=14,face="bold"),
+                axis.title.y=element_text(size=14,face="bold"),
+                axis.text.x=element_text(size=10,face="bold"),
+                axis.text.y=element_text(size=12,face="bold")
+            )
+        print(g)
+        cat("</div>")
+        #cat("</br>")
+    }
+}
+```
